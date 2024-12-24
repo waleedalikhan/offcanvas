@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import { ref } from "vue";
+import VariantOne from "./VariantOne.vue";
+import SampleContentOne from "./SampleContentOne.vue";
+import SampleContentTwo from "./SampleContentTwo.vue";
+
+const v3ShowNext = ref<boolean>(false);
+
 const navLinks: { to: string; title: string }[] = [
   {
     to: "/",
@@ -17,7 +24,7 @@ const navLinks: { to: string; title: string }[] = [
 
 <template>
   <header class="border-b">
-    <nav class="container mx-auto">
+    <nav class="container mx-auto flex items-center justify-between">
       <div class="flex items-center gap-4">
         <template v-for="link in navLinks" :key="link.to">
           <RouterLink
@@ -26,6 +33,21 @@ const navLinks: { to: string; title: string }[] = [
             >{{ link.title }}</RouterLink
           >
         </template>
+      </div>
+      <div>
+        <VariantOne
+          :show-next="v3ShowNext"
+          @prev-click="(val?: boolean) => (v3ShowNext = val!)"
+          triggerer-text="Toggle variant 1 from header"
+        >
+          <SampleContentOne
+            title="Remote content injected header version"
+            :click="() => (v3ShowNext = true)"
+          />
+          <template v-slot:next-content>
+            <SampleContentTwo />
+          </template>
+        </VariantOne>
       </div>
     </nav>
   </header>

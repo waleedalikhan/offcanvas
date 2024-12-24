@@ -1,22 +1,50 @@
 <script setup lang="ts">
-// import { ref } from "vue";
+import { ref } from "vue";
 import VariantOne from "../components/VariantOne.vue";
-// import type { Props } from "../interfaces";
+import SampleContentOne from "../components/SampleContentOne.vue";
+import SampleContentTwo from "../components/SampleContentTwo.vue";
 
-// const toggleVersionOne = ref<Props>();
+const v1ShowNext = ref<boolean>(false);
+
+const v2ShowNext = ref<boolean>(false);
+const openFromOutside = ref<boolean>(false);
 </script>
 
 <template>
-  <VariantOne :is-open="false">
-    <div class="bg-gray-200 lg:w-[25rem] w-full h-[87dvh] p-5">
-      <div class="flex flex-wrap">
-        <div class="w-full">
-          <h2 class=""></h2>
-        </div>
-      </div>
+  <div class="space-y-12 h-[90dvh] relative">
+    <div>
+      <p class="mb-4">With built in trigger button:</p>
+      <VariantOne
+        :show-next="v1ShowNext"
+        @prev-click="(val?: boolean) => (v1ShowNext = val!)"
+      >
+        <SampleContentOne :click="() => (v1ShowNext = true)" />
+        <template v-slot:next-content>
+          <SampleContentTwo />
+        </template>
+      </VariantOne>
     </div>
-    <template v-slot:next-content>
-      <div class="bg-gray-200 lg:w-[60rem] w-full h-[87dvh]"></div>
-    </template>
-  </VariantOne>
+    <div>
+      <p class="mb-4">With trigger button outside component:</p>
+      <button type="button" class="base-btn" @click="openFromOutside = true">
+        Toggle variant 1 from outside component
+      </button>
+      <VariantOne
+        :is-open="openFromOutside"
+        :show-next="v2ShowNext"
+        :has-toggler="false"
+        @close-popup="(val?: boolean) => (openFromOutside = val!)"
+        @prev-click="(val?: boolean) => (v2ShowNext = val!)"
+        drawer-heading="Drawer from header"
+      >
+        <SampleContentOne
+          title="Remote content injected click outside version"
+          :click="() => (v2ShowNext = true)"
+        />
+        <template v-slot:next-content>
+          <SampleContentTwo />
+        </template>
+      </VariantOne>
+    </div>
+  </div>
 </template>

@@ -1,14 +1,21 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import useClickOutside from "../composables/useClickOutside";
 import DoubleArrowIcon from "./svgs/DoubleArrow.vue";
 import CircleXIcon from "./svgs/CircleXIcon.vue";
 import type { Props } from "../interfaces";
 
+const emit = defineEmits<{
+  (e: "prevClick", value?: boolean): void;
+  (e: "closePopup", value?: boolean): void;
+}>();
+
 const {
-  isOpen = false,
+  triggererText = "Toggle variant 1",
+  isOpen,
   hasToggler = true,
-  showNext = false,
+  showNext,
+  drawerHeading = "Drawer heading",
 } = defineProps<Props>();
 
 const componentRef = ref();
@@ -16,23 +23,35 @@ const excludeRef = ref();
 const isCanvasOpen = ref<boolean>(isOpen);
 const showNextContent = ref<boolean>(showNext);
 
+// Function responsible for closing the component on click outside
 useClickOutside(
   componentRef,
   () => {
     isCanvasOpen.value = false;
     showNextContent.value = false;
+    emit("prevClick", showNextContent.value);
   },
   excludeRef
 );
 
 onMounted(() => {
+  // Event responsible for closing the component on ESC key click
   document.addEventListener("keyup", (e) => {
     if (e.keyCode === 27) {
       isCanvasOpen.value = false;
       showNextContent.value = false;
+      emit("prevClick", false);
+      emit("closePopup", false);
     }
   });
 });
+
+watch(
+  () => showNext,
+  (newVal) => {
+    showNextContent.value = newVal;
+  }
+);
 </script>
 
 <template>
@@ -43,16 +62,16 @@ onMounted(() => {
       class="base-btn"
       @click="isCanvasOpen = !isCanvasOpen"
     >
-      Trigger variant
+      {{ triggererText }}
     </button>
   </template>
   <Transition name="offcanvas">
-    <template v-if="isCanvasOpen">
+    <template v-if="isOpen || isCanvasOpen">
       <aside
         class="fixed z-[999] inset-0 p-5 bg-black/50 backdrop-blur-sm flex justify-end"
       >
         <div
-          class="bg-white h-full rounded-2xl p-5 space-y-8 lg:w-auto w-full inner"
+          class="bg-white h-full rounded-2xl p-5 space-y-8 lg:w-auto min-w-[25rem] w-full inner"
           ref="componentRef"
         >
           <div class="flex items-center gap-4 pb-4 border-b justify-between">
@@ -63,7 +82,12 @@ onMounted(() => {
                   class="btn-without-outline transition-all ease-in-out disabled:cursor-not-allowed"
                   :class="[showNextContent ? '' : 'opacity-40']"
                   :disabled="!showNextContent"
-                  @click="showNextContent = false"
+                  @click="
+                    () => {
+                      showNextContent = false;
+                      $emit('prevClick', showNextContent);
+                    }
+                  "
                 >
                   <DoubleArrowIcon />
                 </button>
@@ -78,24 +102,31 @@ onMounted(() => {
                 </button>
               </div>
               <div>
-                <h2 class="text-xl font-semibold">Drawer heading</h2>
+                <h2 class="text-xl font-semibold">{{ drawerHeading }}</h2>
               </div>
             </div>
             <button
               type="button"
               class="btn-without-outline"
-              @click="isCanvasOpen = false"
+              @click="
+                () => {
+                  isCanvasOpen = false;
+                  $emit('closePopup', isCanvasOpen);
+                }
+              "
             >
               <CircleXIcon />
             </button>
           </div>
           <div>
             <Transition name="prev-content">
+              <!-- Area where first content/HTML gets injected -->
               <template v-if="!showNextContent">
                 <slot></slot>
               </template>
             </Transition>
             <Transition name="next-content">
+              <!-- Area where second content/HTML gets injected -->
               <template v-if="showNextContent">
                 <slot name="next-content"></slot>
               </template>
@@ -133,7 +164,10 @@ onMounted(() => {
 }
 
 .prev-content-enter-from,
-.prev-content-leave-to,
+.prev-content-leave-to {
+  opacity: 0;
+}
+
 .next-content-enter-from,
 .next-content-leave-to {
   opacity: 0;
