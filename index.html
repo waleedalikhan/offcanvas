@@ -4,10 +4,143 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./src/index.css" />
     <title>Vite + Vue + TS</title>
   </head>
-  <body>
-    <div id="app"></div>
+  <body class="p-6">
+    <!-- <div id="app"></div> -->
+    <div x-data="xDataOne">
+      <div class="sm:px-6 w-full">
+        <div class="bg-white">
+          <div class="mt-7 overflow-x-auto">
+            <table class="w-full whitespace-nowrap">
+              <thead>
+                <tr>
+                  <template x-for="heading in tableHeaders" :key="heading">
+                    <td class="pl-5 py-5" x-text="heading"></td>
+                  </template>
+                </tr>
+              </thead>
+              <tbody>
+                <template x-for="item in tableData" :key="item.name">
+                  <tr
+                    tabindex="0"
+                    class="focus:outline-none border border-gray-100 rounded cursor-pointer h-20"
+                    @click="onRowClick(item)"
+                  >
+                    <td class="pl-5">
+                      <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 overflow-hidden">
+                          <img
+                            :src="item.userImg"
+                            alt=""
+                            class="rounded-full object-cover h-full w-full"
+                          />
+                        </div>
+                        <p
+                          class="text-base font-medium leading-none text-gray-700 mr-2"
+                          x-text="item.name"
+                        ></p>
+                      </div>
+                    </td>
+                    <td class="pl-5">
+                      <p
+                        class="text-sm leading-none text-gray-600 ml-2"
+                        x-text="item.description"
+                      ></p>
+                    </td>
+                    <td class="pl-5">
+                      <p
+                        class="text-sm leading-none text-gray-600 ml-2"
+                        x-text="item.email"
+                      ></p>
+                    </td>
+                    <td class="pl-5">
+                      <button type="button" class="base-btn">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="size-4"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25"
+                          />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                </template>
+                <tr class="h-3"></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <off-canvas :is-open="showModal" @close-popup="closeModal()">
+        <div class="space-y-8 w-full">
+          <div
+            class="flex sm:flex-nowrap flex-wrap items-end gap-4 pb-8 border-b justify-between"
+          >
+            <div class="flex items-center gap-4 sm:w-auto w-full">
+              <div class="w-20 h-20">
+                <div>
+                  <img
+                    :src="selectedRow.userImg"
+                    alt=""
+                    class="w-full h-full rounded-full object-cover"
+                  />
+                </div>
+              </div>
+              <div>
+                <p
+                  class="text-xl font-semibold truncate"
+                  x-text="selectedRow.name"
+                ></p>
+                <p
+                  class="text-base truncate"
+                  x-text="selectedRow.description"
+                ></p>
+              </div>
+            </div>
+            <div
+              class="px-6 py-2 rounded-full text-white font-semibold"
+              :class="[selectedRow.isActive ? 'bg-green-500' : 'bg-red-500']"
+              x-text="`${selectedRow.isActive ? 'Active' : 'In active'}`"
+            ></div>
+          </div>
+          <div class="grid md:grid-cols-2 grid-cols-1 gap-8 border-b pb-5">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold">Name:</p>
+              <p x-text="selectedRow.name"></p>
+            </div>
+            <div class="flex items-center gap-2">
+              <p class="font-semibold">Description:</p>
+              <p x-text="selectedRow.description"></p>
+            </div>
+          </div>
+          <div class="grid md:grid-cols-2 grid-cols-1 gap-8 border-b pb-5">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold">Email:</p>
+              <p x-text="selectedRow.email"></p>
+            </div>
+            <div class="flex items-center gap-2">
+              <p class="font-semibold">Status:</p>
+              <p
+                x-text="`${selectedRow.isActive ? 'Active' : 'In active'}`"
+              ></p>
+            </div>
+          </div>
+          <div class="px-6">
+            <timeline-component />
+          </div>
+        </div>
+      </off-canvas>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

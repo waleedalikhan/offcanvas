@@ -1,20 +1,16 @@
-import { createApp } from "vue";
-import { createMemoryHistory, createRouter } from "vue-router";
+import { defineCustomElement } from "vue";
+import Alpine from "alpinejs";
 import "./style.css";
-import App from "./App.vue";
-import VariantOneView from "./views/VariantOneView.vue";
-import VariantTwoView from "./views/VariantTwoView.vue";
-import VariantThreeView from "./views/VariantThreeView.vue";
+import Offcanvas from "./components/Offcanvas.ce.vue";
+import Timeline from "./components/Timeline.ce.vue";
+import { xDataOne } from "./alpine/global";
 
-const routes = [
-  { path: "/", component: VariantOneView },
-  { path: "/variant-2", component: VariantTwoView },
-  { path: "/variant-3", component: VariantThreeView },
-];
+window.Alpine = Alpine;
+Alpine.data("xDataOne", () => xDataOne());
+Alpine.start();
 
-const router = createRouter({
-  history: createMemoryHistory(),
-  routes,
-});
-
-createApp(App).use(router).mount("#app");
+// Converting Vue components into web components
+const offCanvas = defineCustomElement(Offcanvas);
+const timelineEl = defineCustomElement(Timeline);
+customElements.define("off-canvas", offCanvas);
+customElements.define("timeline-component", timelineEl);
