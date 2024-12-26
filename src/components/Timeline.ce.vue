@@ -171,19 +171,18 @@
 .new-comment {
   width: 100%;
   input {
-    border: 1px solid #e3e3e3;
     border-radius: 6px;
     height: 48px;
     padding: 0 16px;
-    width: 100%;
+    width: 90%;
+    background: rgba(0, 0, 0, 0.2);
+    border: none;
     &::placeholder {
-      color: #b2b2b2;
+      color: white;
     }
 
     &:focus {
-      border-color: #b2b2b2;
       outline: 0; // Don't actually do this
-      box-shadow: 0 0 0 4px #f4f6f8;
     }
   }
 }
@@ -205,8 +204,8 @@
   }
 
   &.faded-icon {
-    background-color: #f4f6f8;
-    color: #7b7b7b;
+    background-color: #000000;
+    color: #ffffff;
   }
 
   &.filled-icon {
@@ -219,13 +218,13 @@
   display: flex;
   padding-top: 6px;
   gap: 8px;
-  color: #7b7b7b;
+  color: #ffffff;
 
   img {
     flex-shrink: 0;
   }
   a {
-    color: #3d3d3d;
+    color: #ffffff;
     font-weight: 500;
     text-decoration: none;
     &:hover,
@@ -258,9 +257,8 @@
 
 .comment {
   margin-top: 12px;
-  color: #3d3d3d;
+  color: #ffffff;
   border: 1px solid #e3e3e3;
-  box-shadow: 0 4px 4px 0 #f4f6f8;
   border-radius: 6px;
   padding: 16px;
   font-size: 1rem;
@@ -306,7 +304,7 @@
 }
 
 .show-replies {
-  color: #b2b2b2;
+  color: #ffffff;
   background-color: transparent;
   border: 0;
   padding: 0;
