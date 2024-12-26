@@ -20,4 +20,13 @@ export default defineConfig({
       plugins: [tailwindcss, autoprefixer],
     },
   },
+  build: {
+    rollupOptions: {
+      input: {
+        "variant-1": "./index.html",
+        "variant-2": "./variant-2.html",
+        "variant-3": "./variant-3.html",
+      },
+    },
+  },
 });
