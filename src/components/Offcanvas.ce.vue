@@ -1,24 +1,40 @@
 <script setup lang="ts">
+// Necessary imports
 import { ref, onMounted, watch } from "vue";
 import { OnClickOutside } from "@vueuse/components";
-import CircleXIcon from "./svgs/CircleXIcon.vue";
-import type { Props } from "../interfaces";
 
+// Event responsible for closing popup on ESC key click, cross button icon click or click outside the offcanvas drawer
 const emit = defineEmits<{
-  (e: "prevClick", value?: boolean): void;
   (e: "closePopup", value?: boolean): void;
 }>();
 
+// Properties that are necessary to use this component. Note: in html, they will work in kebab-case format, e.g. isOpen = is-open, hasToggler = has-toggler etc. Same goes for the events such as closePopup = @close-popup.
 const {
+  // This property is responsible for triggering the popup
   isOpen,
+  // This property is responsible if you want the toggle button inside the component or not
   hasToggler,
+  // This property is responsible if you want this component to behave as variant 2
   isBackgroundVisible,
+  // This property is responsible if you want this component to behave as variant 3
   isResizeable,
+  // This property is responsible if you want to change the styles of overlay further by using tailwindCSS classes
   overlayClasses,
+  // This property is responsible if you want to change the styles of the inner modal by using tailwindCSS classes
   modalClasses,
+  // This property is responsible for adding styles to the cross button using tailwindCSS classes
   btnClass,
-} = defineProps<Props>();
+} = defineProps<{
+  isOpen?: boolean;
+  hasToggler?: boolean;
+  isBackgroundVisible?: boolean;
+  isResizeable?: boolean;
+  overlayClasses?: string;
+  modalClasses?: string;
+  btnClass?: string;
+}>();
 
+// This state variable will only be used if you want to use this component with the built-in toggle button
 const isCanvasOpen = ref<boolean>(isOpen);
 
 // Function responsible for closing the component on click outside
@@ -36,6 +52,7 @@ onMounted(() => {
     }
   });
 
+  // Code responsible for stopping the background scrolling when the modal is open
   if (!isBackgroundVisible && !isResizeable) {
     if (isCanvasOpen.value || isOpen)
       document.documentElement.style.overflow = "hidden";
@@ -43,9 +60,11 @@ onMounted(() => {
   }
 });
 
+// Watcher to tell if the component is opened or closed (built-in toggle button)
 watch(
   () => isCanvasOpen.value,
   (newVal) => {
+    // Code responsible for stopping the background scrolling when the modal is open
     if (!isBackgroundVisible) {
       if (newVal) document.documentElement.style.overflow = "hidden";
       else document.documentElement.style.overflow = "auto";
@@ -53,9 +72,11 @@ watch(
   }
 );
 
+// Watcher to tell if the component is opened or closed (toggle button form outside)
 watch(
   () => isOpen,
   (newVal) => {
+    // Code responsible for stopping the background scrolling when the modal is open
     if (!isBackgroundVisible && !isResizeable) {
       if (newVal) document.documentElement.style.overflow = "hidden";
       else document.documentElement.style.overflow = "auto";
@@ -63,6 +84,10 @@ watch(
   }
 );
 </script>
+
+<!-- 
+  Before reading the template code below, just consider all directives that are being used with 'v' letter as Alpine's 'x' so v-if is x-if, v-for is x-for. This way you will understand better how the code below is working!
+-->
 
 <template>
   <template v-if="hasToggler">
@@ -102,9 +127,25 @@ watch(
                   }
                 "
               >
-                <CircleXIcon />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="size-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                  />
+                </svg>
               </button>
               <div>
+                <!-- 
+                  This <slot></slot> tag is the place where the content we'll add in our custom <off-canvas></off-canvas> opening and closing tags will show up 
+                -->
                 <slot></slot>
               </div>
             </div>
@@ -136,9 +177,25 @@ watch(
                   }
                 "
               >
-                <CircleXIcon />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="size-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                  />
+                </svg>
               </button>
               <div>
+                <!-- 
+                  This <slot></slot> tag is the place where the content we'll add in our custom <off-canvas></off-canvas> opening and closing tags will show up 
+                -->
                 <slot></slot>
               </div>
             </div>
@@ -150,6 +207,7 @@ watch(
 </template>
 
 <style>
+/* These are necessary to add in order for the component to work with Tailwind classes */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -162,6 +220,8 @@ watch(
     @apply btn-without-outline bg-white text-black rounded-lg px-4 py-2 border;
   }
 }
+
+/* Following are the animation classes that are responsible for animating the off-canvas */
 
 .offcanvas-enter-active,
 .offcanvas-leave-active,

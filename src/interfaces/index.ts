@@ -1,16 +1,3 @@
-export interface Props {
-  triggererText?: string;
-  isOpen?: boolean;
-  hasToggler?: boolean;
-  isBackgroundVisible?: boolean;
-  isResizeable?: boolean;
-  showNext?: boolean;
-  drawerHeading?: string;
-  overlayClasses?: string;
-  modalClasses?: string;
-  btnClass?: string;
-}
-
 export interface ITaskBoardItem {
   id?: string | number;
   title?: string;
