@@ -11,7 +11,206 @@
   </head>
   <body class="bg-[#10121a] overflow-x-hidden">
     <header-component></header-component>
-    <h1 class="text-white text-4xl">Coming soon!</h1>
+    <div x-data="xDataThree" class="flex">
+      <div class="sm:px-6 w-full transition-all ease-in-out duration-500">
+        <div>
+          <div class="mt-7 overflow-x-auto">
+            <table class="w-full whitespace-nowrap">
+              <thead>
+                <tr class="h-14">
+                  <template
+                    x-for="(heading, index) in tableHeaders"
+                    :key="heading"
+                  >
+                    <td class="pl-5 bg-[#21293a]">
+                      <div class="flex items-center gap-6">
+                        <template x-if="index === 0">
+                          <div>
+                            <input
+                              type="checkbox"
+                              class="bg-transparent ring-transparent w-5 h-5 rounded cursor-pointer"
+                              @change="(e) => selectAll(e.target.checked)"
+                            />
+                          </div>
+                        </template>
+                        <p class="text-gray-400" x-text="heading"></p>
+                      </div>
+                    </td>
+                  </template>
+                </tr>
+              </thead>
+              <tbody>
+                <template x-for="(row, index) in tableContent" :key="index">
+                  <tr
+                    tabindex="0"
+                    class="focus:outline-none border-b border-b-[#2a2e37] rounded cursor-pointer h-24"
+                    @click="onRowClick(row)"
+                  >
+                    <td class="pl-5">
+                      <div class="flex items-center gap-6">
+                        <div>
+                          <input
+                            type="checkbox"
+                            class="bg-transparent ring-transparent w-5 h-5 rounded cursor-pointer"
+                            :checked="row.isSelected"
+                            @change="onRowSelect(index)"
+                          />
+                        </div>
+                        <div class="flex items-center gap-4">
+                          <div
+                            class="w-10 h-10 overflow-hidden grid place-content-center rounded-full bg-blue-500"
+                          >
+                            <p class="text-xl text-white flex">
+                              <span
+                                x-text="row.user.firstName.charAt(0)"
+                              ></span>
+                              <span x-text="row.user.lastName.charAt(0)"></span>
+                            </p>
+                          </div>
+                          <div class="space-y-2">
+                            <p class="text-lg leading-none text-white">
+                              <span x-text="row.user.firstName"></span>
+                              <span x-text="row.user.lastName"></span>
+                            </p>
+                            <p
+                              class="text-sm text-[#737373]"
+                              x-text="row.user.position"
+                            ></p>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="pl-5">
+                      <div class="space-y-2">
+                        <p
+                          class="text-lg leading-none text-white"
+                          x-text="row.roles.role"
+                        ></p>
+                        <p
+                          class="text-sm text-[#737373]"
+                          x-text="row.roles.department"
+                        ></p>
+                      </div>
+                    </td>
+                    <td class="pl-5">
+                      <p
+                        class="text-sm leading-none text-gray-400"
+                        x-text="row.location"
+                      ></p>
+                    </td>
+                    <td class="pl-5">
+                      <p
+                        class="text-sm leading-none text-gray-400"
+                        x-text="row.manager"
+                      ></p>
+                    </td>
+                    <td class="pl-5">
+                      <div class="flex items-center gap-1 text-gray-400">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="size-6"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z"
+                          />
+                        </svg>
+                        <p
+                          class="text-sm leading-none text-gray-400"
+                          x-text="row.lastActive"
+                        ></p>
+                      </div>
+                    </td>
+                  </tr>
+                </template>
+                <tr class="h-3"></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <off-canvas
+        :is-open="showModal"
+        @close-popup="closeModal()"
+        modal-classes="!bg-[#181a24] !border-[#2a2e37]"
+        btn-class="text-white"
+        is-resizeable
+      >
+        <div class="space-y-8 xl:w-[35rem] w-full">
+          <div
+            class="flex sm:flex-nowrap flex-wrap items-end gap-4 pb-8 border-b justify-between"
+          >
+            <div class="flex items-center gap-4 sm:w-auto w-full">
+              <div>
+                <div class="flex items-center gap-4">
+                  <div
+                    class="overflow-hidden grid place-content-center rounded-full w-14 h-14 bg-blue-500"
+                  >
+                    <p class="text-2xl text-white flex">
+                      <span
+                        x-text="selectedRow.user.firstName.charAt(0)"
+                      ></span>
+                      <span x-text="selectedRow.user.lastName.charAt(0)"></span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <p class="text-xl font-semibold truncate text-white">
+                  <span x-text="selectedRow.user.firstName"></span>
+                  <span x-text="selectedRow.user.lastName"></span>
+                </p>
+                <p
+                  class="text-base truncate text-white"
+                  x-text="selectedRow.user.position"
+                ></p>
+              </div>
+            </div>
+          </div>
+          <div class="grid md:grid-cols-2 grid-cols-1 gap-8 border-b pb-5">
+            <div class="flex flex-col items-start gap-2">
+              <p class="font-semibold text-white">Name:</p>
+              <p
+                class="text-white"
+                x-text="selectedRow.user.firstName + ' ' + selectedRow.user.lastName"
+              ></p>
+            </div>
+            <div class="flex flex-col items-start gap-2">
+              <p class="font-semibold text-white">Role:</p>
+              <p class="text-white" x-text="selectedRow.roles.role"></p>
+            </div>
+          </div>
+          <div class="grid md:grid-cols-2 grid-cols-1 gap-8 border-b pb-5">
+            <div class="flex flex-col items-start gap-2">
+              <p class="font-semibold text-white">Department:</p>
+              <p class="text-white" x-text="selectedRow.roles.department"></p>
+            </div>
+            <div class="flex flex-col items-start gap-2">
+              <p class="font-semibold text-white">Location:</p>
+              <p class="text-white" x-text="selectedRow.location"></p>
+            </div>
+          </div>
+          <div class="grid md:grid-cols-2 grid-cols-1 gap-8 border-b pb-5">
+            <div class="flex flex-col items-start gap-2">
+              <p class="font-semibold text-white">Manager:</p>
+              <p class="text-white" x-text="selectedRow.manager"></p>
+            </div>
+            <div class="flex flex-col items-start gap-2">
+              <p class="font-semibold text-white">Last Active:</p>
+              <p class="text-white" x-text="selectedRow.lastActive"></p>
+            </div>
+          </div>
+          <div class="px-6">
+            <timeline-component />
+          </div>
+        </div>
+      </off-canvas>
+    </div>
     <script type="module" src="./src/main.ts"></script>
   </body>
 </html>

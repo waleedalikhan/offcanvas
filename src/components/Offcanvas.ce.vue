@@ -117,7 +117,8 @@ watch(
     <Transition name="offcanvas-resize">
       <template v-if="isOpen || isCanvasOpen">
         <aside
-          class="p-5 flex justify-end xl:static xl:backdrop-blur-0 xl:bg-transparent inset-0 bg-black/50 backdrop-blur-sm fixed z-[999]"
+          class="p-5 flex justify-end xl:static xl:backdrop-blur-0 xl:bg-transparent inset-0 bg-black/50 backdrop-blur-sm z-[999] relative"
+          :class="overlayClasses"
         >
           <OnClickOutside @trigger="close">
             <div
@@ -200,18 +201,5 @@ watch(
 .offcanvas-resize-leave-to .inner {
   transform: translateX(20%);
   opacity: 0;
-}
-
-@media only screen and (max-width: 1279px) {
-  .offcanvas-resize-enter-from,
-  .offcanvas-resize-leave-to {
-    transform: translateX(0);
-    opacity: 0;
-  }
-  .offcanvas-resize-enter-from .inner,
-  .offcanvas-resize-leave-to .inner {
-    transform: translateX(20%);
-    opacity: 0;
-  }
 }
 </style>
